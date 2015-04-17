@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'com.jfrog.bintray' version '1.1'
+}
+
+group = 'io.otonashi'
+version = '1.0.0'
+sourceCompatibility = '1.7'
+
+repositories {
+    mavenCentral()
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+publishing {
+    publications {
+        main(MavenPublication) {
+            artifactId = 'otonashi-serial'
+            from components.java
+            artifact sourcesJar
+        }
+    }
+}
+
+bintray {
+    bintray {
+        user = bintray_user
+        key = bintray_apiKey
+        publications = ['main']
+        dryRun = false
+        publish = false
+        pkg {
+            repo = 'otonashi-io'
+            name = 'otonashi-serial'
+            desc = 'Useful utilities for Java object serialization/deserialization'
+            websiteUrl = 'https://github.com/ypoluektovich/otonashi-serial'
+            issueTrackerUrl = 'https://github.com/ypoluektovich/otonashi-serial/issues'
+            vcsUrl = 'https://github.com/ypoluektovich/otonashi-serial.git'
+            licenses = ['MPL-2.0']
+            publicDownloadNumbers = true
+            version {
+                name = project.version
+                vcsTag = 'v' + project.version
+            }
+        }
+    }
+}
